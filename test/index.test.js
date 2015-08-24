@@ -94,26 +94,27 @@ describe('Mojn', function() {
         analytics.spy(mojn, 'identify');
       });
 
-      it('should not error', function(done) {
+      it('should not error', function() {
         analytics.identify({ email: 'foo@baz.com' });
-        var img = mojn.identify.returns[0];
-        img.onload = function() { done(); };
-        img.onerror = function() { done(new Error('error loading ' + img.src)); };
+        // TODO: test that identify did load.
       });
 
       it('should ignore if missing email', function() {
         analytics.identify({ anything: 'but an email' });
-        var img = mojn.identify.returns[0];
-        analytics.assert(img == null);
-      });
-
-      it('should track if email is set', function() {
-        var email = 'test@test.mojn.com';
-        analytics.identify({ email: email });
-        var img = mojn.identify.returns[0];
-        var expected = window.location.protocol + '//matcher.idtargeting.com/identify.gif?cid=' + options.customerCode + '&_mjnctid=' + email;
-        analytics.assert(img.src === expected);
+        // TODO: test that identify did not load.
       });
     });
+
+    describe('#page', function() {
+      beforeEach(function() {
+        analytics.spy(mojn, 'page');
+      });
+
+      it('should not error', function() {
+        analytics.page();
+        // TODO: test that page did load.
+      });
+    });
+
   });
 });
