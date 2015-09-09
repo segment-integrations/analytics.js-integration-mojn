@@ -1,3 +1,4 @@
+'use strict';
 
 var Analytics = require('analytics.js-core').constructor;
 var integration = require('analytics.js-integration');
@@ -112,12 +113,11 @@ describe('Mojn', function() {
       });
 
       it('should not error', function() {
-        var anonymousId = analytics.user().anonymousId()
+        var anonymousId = analytics.user().anonymousId();
         mojn.options.sync = true;
         analytics.page();
         analytics.loaded('<img src="http://ho.idtargeting.com/c/EWBCK?u=' + anonymousId + '&_chk">');
       });
     });
-
   });
 });
