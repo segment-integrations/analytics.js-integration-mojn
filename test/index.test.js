@@ -66,6 +66,7 @@ describe('Mojn', function() {
       analytics.once('ready', done);
       analytics.initialize();
       analytics.page();
+      analytics.spy(mojn, 'load');
     });
 
     describe('#track', function() {
@@ -96,7 +97,7 @@ describe('Mojn', function() {
 
       it('should not error', function() {
         analytics.identify({ email: 'foo@baz.com' });
-        // TODO: test that identify did load.
+        analytics.loaded('<img src="https://matcher.idtargeting.com/identify.gif?cid=EWBCK&_mjnctid=foo@baz.com">');
       });
 
       it('should ignore if missing email', function() {
@@ -111,8 +112,10 @@ describe('Mojn', function() {
       });
 
       it('should not error', function() {
+        var anonymousId = analytics.user().anonymousId()
+        mojn.options.sync = true;
         analytics.page();
-        // TODO: test that page did load.
+        analytics.loaded('<img src="http://ho.idtargeting.com/c/EWBCK?u=' + anonymousId + '&_chk">');
       });
     });
 
