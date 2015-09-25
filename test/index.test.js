@@ -1,3 +1,4 @@
+'use strict';
 
 var Analytics = require('analytics.js-core').constructor;
 var integration = require('analytics.js-integration');
@@ -66,6 +67,7 @@ describe('Mojn', function() {
       analytics.once('ready', done);
       analytics.initialize();
       analytics.page();
+      analytics.spy(mojn, 'load');
     });
 
     describe('#track', function() {
@@ -94,25 +96,27 @@ describe('Mojn', function() {
         analytics.spy(mojn, 'identify');
       });
 
-      it('should not error', function(done) {
+      it('should not error', function() {
         analytics.identify({ email: 'foo@baz.com' });
-        var img = mojn.identify.returns[0];
-        img.onload = function() { done(); };
-        img.onerror = function() { done(new Error('error loading ' + img.src)); };
+        analytics.loaded('<img src="https://matcher.idtargeting.com/identify.gif?cid=EWBCK&_mjnctid=foo@baz.com">');
       });
 
       it('should ignore if missing email', function() {
         analytics.identify({ anything: 'but an email' });
-        var img = mojn.identify.returns[0];
-        analytics.assert(img == null);
+        // TODO: test that identify did not load.
+      });
+    });
+
+    describe('#page', function() {
+      beforeEach(function() {
+        analytics.spy(mojn, 'page');
       });
 
-      it('should track if email is set', function() {
-        var email = 'test@test.mojn.com';
-        analytics.identify({ email: email });
-        var img = mojn.identify.returns[0];
-        var expected = window.location.protocol + '//matcher.idtargeting.com/identify.gif?cid=' + options.customerCode + '&_mjnctid=' + email;
-        analytics.assert(img.src === expected);
+      it('should not error', function() {
+        var anonymousId = analytics.user().anonymousId();
+        mojn.options.sync = true;
+        analytics.page();
+        analytics.loaded('<img src="http://ho.idtargeting.com/c/EWBCK?u=' + anonymousId + '&_chk">');
       });
     });
   });
